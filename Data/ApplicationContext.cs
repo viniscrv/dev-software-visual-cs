@@ -7,8 +7,8 @@ namespace FolhaDePagamento.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         
-        public DbSet<Employee> Employees{ get; set; }
-        public DbSet<Payroll> Payrolls{ get; set; }
+        public DbSet<Employee> Employees{ get; set; } = null!;
+        public DbSet<Payroll> Payrolls { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

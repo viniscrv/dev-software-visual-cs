@@ -1,5 +1,6 @@
 ﻿using FolhaDePagamento.Data;
 using FolhaDePagamento.Models;
+using FolhaDePagamento.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FolhaDePagamento.Controllers;
@@ -22,6 +23,15 @@ public class PayrollController : ControllerBase
     [Route("cadastrar")]
     public IActionResult registerPayroll(Payroll payroll)
     {
+
+        {
+            payroll.GrossSalary = Calculate.CalcGrossSalary(payroll.QuantityHour, payroll.ValueHour);
+            payroll.IncomeTax = Calculate.CalcIncomeTax(payroll.GrossSalary);
+            payroll.InssTax = Calculate.CalcInssTax(payroll.GrossSalary);
+            payroll.FgtsTax= Calculate.CalcFgtsTax(payroll.GrossSalary);
+            payroll.NetSalary= Calculate.CalcNetSalary(payroll.GrossSalary, payroll.IncomeTax, payroll.InssTax);
+        }
+
         _context.Add(payroll);
         _context.SaveChanges();
 
