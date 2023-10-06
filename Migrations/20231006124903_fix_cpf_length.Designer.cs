@@ -2,6 +2,7 @@
 using FolhaDePagamento.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FolhaDePagamento.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20231006124903_fix_cpf_length")]
+    partial class fix_cpf_length
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.22");
@@ -57,7 +59,8 @@ namespace FolhaDePagamento.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
 
                     b.ToTable("Payrolls");
                 });
@@ -65,12 +68,18 @@ namespace FolhaDePagamento.Migrations
             modelBuilder.Entity("FolhaDePagamento.Models.Payroll", b =>
                 {
                     b.HasOne("FolhaDePagamento.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
+                        .WithOne("Payroll")
+                        .HasForeignKey("FolhaDePagamento.Models.Payroll", "EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("FolhaDePagamento.Models.Employee", b =>
+                {
+                    b.Navigation("Payroll")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
