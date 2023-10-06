@@ -21,7 +21,7 @@ public class EmployeeController : ControllerBase
         _context.Add(employee);
         _context.SaveChanges();
 
-        return Ok(employee);
+        return Created("", employee);
     }
 
 
