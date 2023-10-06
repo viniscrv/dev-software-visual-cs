@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationContext>(
-    options => options.UseSqlite("Data Source=ecommerce.db;Cache=shared")
+    options => options.UseSqlite("Data Source=database.db;Cache=shared")
 );
 
 builder.Services.AddControllers();
