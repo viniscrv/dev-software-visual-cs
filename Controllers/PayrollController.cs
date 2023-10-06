@@ -2,6 +2,7 @@
 using FolhaDePagamento.Models;
 using FolhaDePagamento.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FolhaDePagamento.Controllers;
 
@@ -42,7 +43,9 @@ public class PayrollController : ControllerBase
     [Route("listar")]
     public IActionResult getAllPayroll()
     {
-        var payrolls = _context.Payrolls.ToList();
+        List<Payroll> payrolls = _context.Payrolls.Include(e => e.Employee).ToList();
+
+        if (payrolls.Count == 0) return NotFound();
 
         return Ok(payrolls);
     }
@@ -50,10 +53,14 @@ public class PayrollController : ControllerBase
     [HttpGet]
     [Route("buscar/{cpf}/{mes}/{ano}")]
     public IActionResult getUniquePayroll(
-        [FromRoute] string cpf, [FromRoute] int month, [FromRoute] int year)
+        [FromRoute] string cpf, int mes, int ano)
     {
-        var payroll = _context.Payrolls
-            .Where(p => p.Month == month && p.Year == year).ToList();
+        var payroll = _context.Payrolls.Include(p => p.Employee)
+            .FirstOrDefault(p =>
+                p.Employee.Cpf == cpf &&
+                p.Year == ano &&
+                p.Month == mes
+            );
 
         return Ok(payroll);
     }
